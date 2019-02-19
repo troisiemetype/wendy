@@ -1,0 +1,18 @@
+#N canvas 385 135 636 439 10;
+#X obj 264 183 cnv 15 45 23 empty \$0-dspcnv empty 20 12 0 14 -260818
+-66577 0;
+#X msg 15 78 \; pd dsp \$1;
+#X obj 91 34 sel 1;
+#X msg 91 56 16;
+#X msg 120 56 14;
+#X obj 15 12 r \$0-dsp;
+#X obj 268 187 tgl 15 0 \$0-dsp empty dsp 17 5 0 10 -262144 -1 -1 0
+1;
+#X msg 91 78 \; \$0-dspcnv color \$1 2 2;
+#X connect 2 0 3 0;
+#X connect 2 1 4 0;
+#X connect 3 0 7 0;
+#X connect 4 0 7 0;
+#X connect 5 0 1 0;
+#X connect 5 0 2 0;
+#X coords 0 -1 1 1 47 25 2 263 182;
