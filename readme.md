@@ -1,5 +1,5 @@
-#Wendy...
-##is a UV-laser projector for printing photographic process
+# Wendy...
+## is a UV-laser projector for printing photographic process
 
 It's based on a 200mW UV laser, a pair of laser galvos, a Raspberry Pi and pure data.
 
