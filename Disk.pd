@@ -1,0 +1,16 @@
+#N canvas 458 41 716 686 10;
+#X obj 26 -102 patches/LaserDSP;
+#X obj 23 -53 patches/LaserAngles;
+#X obj 23 24 patches/LaserFormat;
+#X obj 23 101 patches/LaserOffset;
+#X obj 23 301 patches/LaserConnexion;
+#X obj 23 178 patches/LaserDisk;
+#X connect 1 0 2 0;
+#X connect 1 0 3 0;
+#X connect 1 0 5 0;
+#X connect 2 0 4 0;
+#X connect 2 1 4 1;
+#X connect 3 0 4 0;
+#X connect 3 1 4 1;
+#X connect 5 0 4 0;
+#X connect 5 1 4 1;

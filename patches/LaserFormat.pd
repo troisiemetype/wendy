@@ -1,4 +1,4 @@
-#N canvas 303 75 881 546 10;
+#N canvas 304 101 881 546 10;
 #X obj 31 15 inlet;
 #X obj 31 81 s \$0-xMaxAngle;
 #X obj 125 81 s \$0-yMaxAngle;
@@ -179,4 +179,4 @@
 #X connect 34 0 35 1;
 #X connect 35 0 22 0;
 #X connect 35 1 23 0;
-#X coords 0 -1 1 1 360 74 1 200 200;
+#X coords 0 -1 1 1 360 74 2 200 200;

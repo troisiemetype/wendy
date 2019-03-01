@@ -1,4 +1,4 @@
-#N canvas 184 159 981 582 10;
+#N canvas 185 159 981 582 10;
 #X msg 62 -55 buffer 2;
 #X obj 62 -96 loadbang;
 #X obj 62 393 dac~;
@@ -44,8 +44,8 @@
 #X msg 181 -111 1;
 #X obj 181 -89 wiringPi_gpio 3 0 0;
 #X text 242 -155 light a led at startup;
-#X msg 427 211 1;
-#X msg 385 211 0;
+#X msg 427 237 1;
+#X msg 385 237 0;
 #X msg 139 267 0;
 #X msg 172 267 1;
 #X msg 209 267 0;
@@ -91,6 +91,7 @@
 #X connect 25 0 46 0;
 #X connect 25 0 39 0;
 #X connect 25 1 40 0;
+#X connect 25 1 46 0;
 #X connect 25 2 45 0;
 #X connect 25 2 39 0;
 #X connect 26 0 52 0;
