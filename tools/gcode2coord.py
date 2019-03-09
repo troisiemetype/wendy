@@ -13,6 +13,7 @@ G 	n 		This is the type of move, 0 being fast move, 1 beeing normal move
 X 	n 		X coordinate
 Y 	n 		Y coordinate
 Z 	n 		Z coordinate is mapped to Intensity when Pure Data parse the file. 1 will be normal speed (mm/s), 0 will be fast move (like G0)
+next		Info to process the previously received data
 
 G0 move in Gcode will be exported as new coordinate with rapid move (no change beside text formatting)
 G1 ditto
@@ -57,7 +58,7 @@ parser = argparse.ArgumentParser(description = "reads a Gcode file and export co
 
 parser.add_argument("i", help = "input Gcode file")
 parser.add_argument("-o", "--output-file", dest = "output", metavar = "", default = "output.txt", help = "output coordinates text file")
-parser.add_argument("-e", "--error", dest = "error", metavar = "", default = error, help = "max error value when approximating circle with lines")
+parser.add_argument("-e", "--error", dest = "error", metavar = "", default = error, type = float, help = "max error value when approximating circle with lines")
 
 args = parser.parse_args()
 
@@ -78,6 +79,10 @@ def outputLine(x, y, z, g):
 	outputFile.write("X %f\n" %x)
 	outputFile.write("Y %f\n" %y)
 	outputFile.write("Z %f\n" %z)
+	outputFile.write("next\n")
+
+	global index
+	index += 1
 
 
 def computeCircle(mode, direction):
@@ -223,8 +228,6 @@ def computeCircle(mode, direction):
 		y = yCenter + radius * sin(a)
 		z = position["Z"]
 		g = 1
-		global index
-		index += 1
 		outputLine(x, y, z, g)
 		aStart = a
 		position["X"] = x
@@ -236,6 +239,7 @@ def computeCircle(mode, direction):
 for line in inputFile:
 
 	lineIndex += 1
+	circleOffset = {"I": 0, "J": 0, "R": 0}
 
 	line.strip()
 	line.upper()
@@ -271,7 +275,6 @@ for line in inputFile:
 
 	if update == 1:
 		if moveType["G"] == 0 or moveType["G"] == 1:
-			index += 1
 #			print "update i %u" %index
 			position = deepcopy(tmpPos)
 			outputLine(position["X"], position["Y"], position["Z"], moveType["G"])
