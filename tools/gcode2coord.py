@@ -2,6 +2,38 @@
 # -*- coding: utf-8 -*-
 #
 # Gcode parser to coordinates file, for simple use with Wendy laser projector.
+'''
+Wendy laser projector runs on Pure Data.
+Pure Data can parse a file, but the text extract tools are quite limited, so it's more comfortable to format data for it.
+Pure Data can easily read a text file one line at a time, and exports its values as -space- separated list.
+
+This program thus export each Gcode move following this pattern:
+ID 	n 		This a unique line index, incremented on each new ccord point
+G 	n 		This is the type of move, 0 being fast move, 1 beeing normal move
+X 	n 		X coordinate
+Y 	n 		Y coordinate
+Z 	n 		Z coordinate is mapped to Intensity when Pure Data parse the file. 1 will be normal speed (mm/s), 0 will be fast move (like G0)
+
+G0 move in Gcode will be exported as new coordinate with rapid move (no change beside text formatting)
+G1 ditto
+
+G2 and G3 moves are handled this way.
+In offset (coord) mode, the I and J offsets are extracted, the resulting radius is computed, then the angular travel
+If there are no X and Y values provided, the program assumes we draw a full circle (CW or CCW)
+
+In radius mode, R value is provided, resulting offset is computed, angular travel as well.
+In this mode the shorter path will be used (so max angular travel is pi/2).
+It will be an error if no end coords are supplied.
+
+Once Offsets, radius and angular travel are defined, the max error angle is computed.
+This is the angle for which the difference between the arc and a line approximating it goes beyond error value.
+This error value can be passed as argument when running the program.
+Then the circle is broken into as many lines are needed, and exported as G1 moves to the output file.
+
+For now G0, G1, G2 and G3 are handled.
+For G2 and G3, only G17 plane is supported (arc in the XY plane, revolving around Z axis.)
+P paramater is neither supported.
+'''
 #
 
 import os
@@ -19,7 +51,7 @@ coords = ("X", "Y", "Z")
 circle = ("I", "J", "R")
 index = 0
 lineIndex = 0
-error = 0.5
+error = 0.1
 
 parser = argparse.ArgumentParser(description = "reads a Gcode file and export coordinates that can be read by Wendy laser projetcor")
 
@@ -60,17 +92,21 @@ def computeCircle(mode, direction):
 	xOffset = xEnd - xStart
 	yOffset = yEnd - yStart
 
+	if xOffset == 0 and yOffset == 0:
+		if mode == "radius":
+			print "line %u: End and start point cannot be the same in radius mode." %lineIndex
+			return
+
 	offset = (xOffset ** 2 + yOffset ** 2) ** 0.5
-	
-	print "\nmode %s" %mode
-	print "start X: %f" % xStart
-	print "start Y: %f" % yStart
-	print "end X: %f" % xEnd
-	print "end Y: %f" % yEnd
-	print "offset X: %f" % xOffset
-	print "offset Y: %f" % yOffset
-	print "offset: %f\n" % offset
-	
+	'''
+	print "\n"
+	print "G%u" %direction
+	print "mode %s" %mode
+	print "start :\t\t%f ; %f" % (xStart, yStart)
+	print "end : \t\t%f ; %f" % (xEnd, yEnd)
+	print "offset : \t%f ; %f" % (xOffset, yOffset)
+	print "offset: \t%f\n" % offset
+	'''
 
 	if mode == "coords":
 		xCenterOffset = circleOffset["I"]
@@ -124,13 +160,11 @@ def computeCircle(mode, direction):
 		yCenter = yVect * d + yM
 		xCenterOffset = xCenter - xStart
 		yCenterOffset = yCenter - yStart
-	
-	print "center X: %f" %xCenter
-	print "center Y: %f" %yCenter
-	print "center offset X: %f" %xCenterOffset
-	print "center offset Y: %f" %yCenterOffset
-	print "radius: %f\n" %radius
-	
+	'''
+	print "center : \t%f ; %f" %(xCenter, yCenter)
+	print "ctr offset : \t%f ; %f" %(xCenterOffset, yCenterOffset)
+	print "radius: \t%f\n" %radius
+	'''
 	'''
 	print "X offset: %f" %xOffset
 	print "Y offset: %f" %yOffset
@@ -147,7 +181,13 @@ def computeCircle(mode, direction):
 #	aEnd += 2 * pi
 #	aEnd %= 2 * pi
 
-	a = fabs(aEnd - aStart)
+	a = aEnd - aStart
+	if direction == 2:
+		if a > 0: a -= 2 * pi
+	elif direction == 3:
+		if a < 0: a += 2 * pi
+
+	if mode == "coords" and a == 0: a += 2 * pi
 
 	# Wen need to know how much segments we will do for this circle
 	# The error parameter gives the max distance between the arc and the straight line going from start to end.
@@ -161,18 +201,21 @@ def computeCircle(mode, direction):
 	# finally, we compute angle delta, and divide it by error angle to obtain error increment
 
 	aError = acos((radius - error) / radius)
-	aSteps = int(ceil(a / aError))
+	aSteps = int(ceil(fabs(a) / aError))
 	aIncr = a / aSteps
-	if direction == 2: aIncr *= -1
 
+	'''
 	print "start angle (degrees): %f" %degrees(aStart)
 	print "end angle (degrees): %f" %degrees(aEnd)
-	print "start angle : %f" %aStart
-	print "end angle : %f" %aEnd
-	print "travel angle : %f" %a
-	print "error angle : %f" %aError
-	print "steps : %u" %aSteps
-	print "angle increment : %f" %aIncr
+	'''
+	'''
+	print "start angle : \t%f" %aStart
+	print "end angle : \t%f" %aEnd
+	print "travel angle : \t%f" %a
+	print "error angle : \t%f" %aError
+	print "steps : \t%u" %aSteps
+	print "angle incr : \t%f" %aIncr
+	'''
 
 	for i in range(aSteps):
 		a = aStart + aIncr
@@ -186,6 +229,7 @@ def computeCircle(mode, direction):
 		aStart = a
 		position["X"] = x
 		position["Y"] = y
+
 	return
 
 
@@ -239,3 +283,5 @@ for line in inputFile:
 
 inputFile.close()
 outputFile.close()
+
+print "exported %u points in %s" %(index, args.output)
