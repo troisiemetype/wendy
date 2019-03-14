@@ -1,4 +1,4 @@
-#N canvas 51 63 974 678 10;
+#N canvas 52 63 974 678 10;
 #X obj 14 6 patches/LaserDSP;
 #X obj 14 32 patches/LaserAngles;
 #X obj 14 110 patches/LaserFormat;
