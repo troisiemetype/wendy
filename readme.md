@@ -19,11 +19,13 @@ Majority of patches take basic settings in ther inlets, and output an audio stre
 These sub patches are what is indispensable, and so usefull that every main patch should have it.
 #### LaserDSP
 __usefull__
+![DSP module](pictures/DSP.png)
 
 Just gives an easy way to enable DSP on the control patch, so coordinates can be computed.
 
 #### LaserAngles
 __Needed__
+![Laser settings](pictures/settings.png)
 
 Labelled as _Global settings_ in the sub-patch, it permits to set the distance from laser to projection support, as well as angles and DPI. These settings are used to compute maximum projection size, and send basic informations to other subatches, like max size, max angle, angle to mm ratio, dpi, and so on. DPI, distance and angles can be changed.
 
@@ -31,6 +33,7 @@ Each sub-patch should be connected to this one in order to compute positions.
 
 #### LaserFormat
 __usefull__
+![Support size](pictures/support.png)
 
 Labbelled as _support size_ on the GUI, this patch just display a rectangle which size is set by user. It's a convenient tool to check where the piece of paper should be placed in front of the laser.
 
@@ -38,6 +41,7 @@ Inlet has to be connected from _Laser Angles_, Outlet to LaserConnexion.
 
 #### LaserOffset
 __usefull__
+![Laser offset](pictures/offset.png)
 
 This is another convenient tool that offsets the image projected. The projection defaults centered, offset can be used to move the projected data without having to move the paper.
 
@@ -45,6 +49,7 @@ Inlet has to be connected from _Laser Angles_, Outlet to LaserConnexion.
 
 #### LaseConnexion
 __Needed__
+![Laser connection](pictures/connect.png)
 
 Is the last patch of the chain. It receives audio stream from other patches, and send it to the laser. It also provides control functions.
 
@@ -56,6 +61,9 @@ There is a checkbox for DSP toggle on the laser, as well as the ability to set t
 
 ### Main patches
 #### Image
+![Open image](pictures/openimage.png)
+
+![Send Image](pictures/sendimage.png)
 
 This is _the_ patch the laser was designed for. it comprises two subpatches.
 
@@ -79,6 +87,7 @@ It uses an audio track (.wav file), which is printed like a vinyl disk, follwing
 Inlet should be connected from _Laser angles_, outlets~ to _Laser connexion_.
 
 #### Gcode
+![Vector module](pictures/vector.png)
 This module can use (very basic !) Gcode to drive the laser by _path_ instead of _raster_. This one is really a hack : Pure Data is not made to (easilly) parse complex files like SVG, so Gcode from Inkscape extension is used here. Only G0 and G1 are understood, so every curve or circle in the original SVG file as to be changed to segments (extensions/modify paht/flatten bezier curves).
 
 Path speed varies according to Z value in the gcode file, and global speed can be changed.
@@ -86,6 +95,7 @@ Path speed varies according to Z value in the gcode file, and global speed can b
 Inlet should be connected from _Laser angles_, outlets~ to _Laser connexion_
 
 #### Sinesum
+![Sinesum](pictures/sinesum.png)
 Is a tool which plays with circles and their harmonics. Main settings are base diameter and frequency.
 There are eight circles that can be defined and enable, each with frequency (entire multiple of the base frequency), amplitude (same), angle offset, and the ability to reverse direction or value.
 
