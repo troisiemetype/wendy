@@ -1,4 +1,4 @@
-#N canvas 77 56 1085 685 10;
+#N canvas 78 56 1085 685 10;
 #X obj 391 96 cnv 15 352 90 empty empty empty 20 12 0 14 -233017 -66577
 0;
 #X obj 548 143 cnv 15 15 15 empty \$0-tcpconnect empty 20 12 0 14 -260818
@@ -81,12 +81,12 @@
 #X obj 477 164 hradio 15 0 0 3 empty \$0-laser Laser\ (off\ /\ auto\ /\ on)
 50 5 0 10 -260818 -66577 -66577 0;
 #X msg 466 29 0;
-#X obj 781 230 mrpeach/routeOSC /dsp /laser;
 #X obj 863 281 route 0 1 2;
 #X msg 781 484 \; \$0-laserdsp color \$1 2 2 \;;
 #X msg 863 354 \; \$0-laser color \$1 2 2 \;;
 #X msg 863 319 14;
 #X msg 895 319 16;
+#X obj 781 230 mrpeach/routeOSC /dsp /laser /id;
 #X connect 3 0 28 1;
 #X connect 4 0 29 0;
 #X connect 4 0 73 0;
@@ -155,9 +155,9 @@
 #X connect 53 0 27 0;
 #X connect 54 0 27 0;
 #X connect 55 0 56 0;
-#X connect 56 0 74 0;
-#X connect 57 0 76 0;
-#X connect 58 0 76 0;
+#X connect 56 0 79 0;
+#X connect 57 0 75 0;
+#X connect 58 0 75 0;
 #X connect 59 0 52 0;
 #X connect 60 0 64 0;
 #X connect 63 0 60 0;
@@ -170,11 +170,11 @@
 #X connect 68 1 58 0;
 #X connect 72 0 54 0;
 #X connect 73 0 72 0;
-#X connect 74 0 68 0;
-#X connect 74 1 75 0;
-#X connect 75 0 78 0;
-#X connect 75 1 79 0;
-#X connect 75 2 78 0;
-#X connect 78 0 77 0;
-#X connect 79 0 77 0;
+#X connect 74 0 77 0;
+#X connect 74 1 78 0;
+#X connect 74 2 77 0;
+#X connect 77 0 76 0;
+#X connect 78 0 76 0;
+#X connect 79 0 68 0;
+#X connect 79 1 74 0;
 #X coords 0 -1 1 1 360 98 2 387 92;
